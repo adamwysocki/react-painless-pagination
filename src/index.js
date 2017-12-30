@@ -1,6 +1,7 @@
 /* @flow */
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { rgba, rgb } from "polished";
 
 const PainlessPaginationWrapper = styled.div`
@@ -70,7 +71,10 @@ const pageQueryParams = ["page", "page_num", "pageNum", "page_number", "pageNumb
 /**
  * Type definition for class props.
  */
-type Props = {};
+type Props = {
+  border: boolean,
+  circle: boolean
+};
 
 /**
  * React class for state select in a form
@@ -81,20 +85,24 @@ class PainlessPagination extends React.Component<Props> {
    * @memberof PainlessPagination
    * @static
    */
-  static defaultProps = {};
+  static defaultProps = {
+    border: false,
+    circle: false
+  };
 
   /**
    * @memberof PainlessPagination class.
    * @static
    */
-  static propTypes = {};
+  static propTypes = {
+    border: PropTypes.bool,
+    circle: PropTypes.bool
+  };
 
   formatUrl(pathName: string, pageQueryParam: string, pageNumber: number, otherQueryParams: string) {
-    let url = "";
     let queryParam = "";
     let forwardSlash = "/";
-
-    console.log("pathName:", pathName);
+    let _otherQueryParams = "";
 
     if (pageQueryParam) {
       queryParam = `?${pageQueryParam}=`;
@@ -105,11 +113,11 @@ class PainlessPagination extends React.Component<Props> {
       pathName = "";
     }
 
-    url = `${pathName}${forwardSlash}${queryParam}${pageNumber}`;
+    if (otherQueryParams) {
+      _otherQueryParams = `&${otherQueryParams}`;
+    }
 
-    console.log("url:", url);
-
-    return url;
+    return `${pathName}${forwardSlash}${queryParam}${pageNumber}${_otherQueryParams}`;
   }
 
   renderPaginationRow(
@@ -135,7 +143,7 @@ class PainlessPagination extends React.Component<Props> {
         paginationVals.push(
           <PainlessPaginationLink
             key={result[x]}
-            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, "")}
+            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, otherQueryParams || "")}
           >
             <PainlessPaginationNumber border={this.props.border} circle={this.props.circle} active>
               {result[x]}
@@ -146,7 +154,7 @@ class PainlessPagination extends React.Component<Props> {
         paginationVals.push(
           <PainlessPaginationLink
             key={result[x]}
-            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, "")}
+            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, otherQueryParams || "")}
           >
             <PainlessPaginationNumber border={this.props.border} circle={this.props.circle}>
               {result[x]}
@@ -162,6 +170,7 @@ class PainlessPagination extends React.Component<Props> {
     let currentPageNumber = 1;
     let pageNumberQueryParam = null;
     let pathName = window.location.pathname;
+    let otherQueryParams = "";
     const location = window.location;
 
     if (location.hasOwnProperty("pathname") && location.pathname) {
@@ -185,10 +194,13 @@ class PainlessPagination extends React.Component<Props> {
         if (pageQueryParams.includes(searchTerm)) {
           currentPageNumber = parseInt(searchElements[1]);
           pageNumberQueryParam = searchTerm;
+          searchParams.splice(index, 1);
+          break;
         }
       }
+      otherQueryParams = searchParams.join("&");
     }
-    return { currentPageNumber, pageNumberQueryParam, pathName };
+    return { currentPageNumber, pageNumberQueryParam, pathName, otherQueryParams };
   }
 
   /**
@@ -197,7 +209,8 @@ class PainlessPagination extends React.Component<Props> {
    * @return {string} - HTML markup for the component.
    */
   render() {
-    const { currentPageNumber, pageNumberQueryParam, pathName } = this.getPaginationInformation();
+    const totalPages = 10;
+    const { currentPageNumber, pageNumberQueryParam, pathName, otherQueryParams } = this.getPaginationInformation();
     const nextPageNumber = currentPageNumber + 1;
     const previousPageNumber = currentPageNumber > 1 ? currentPageNumber - 1 : currentPageNumber;
     let leftArrowVisibility = "visible",
@@ -205,7 +218,7 @@ class PainlessPagination extends React.Component<Props> {
 
     if (currentPageNumber === 1) {
       leftArrowVisibility = "hidden";
-    } else if (currentPageNumber === 10) {
+    } else if (currentPageNumber === totalPages) {
       rightArrowVisibility = "hidden";
     }
 
@@ -214,17 +227,23 @@ class PainlessPagination extends React.Component<Props> {
         <PainlessPaginationList>
           <PainlessPaginationLink
             style={{ visibility: leftArrowVisibility }}
-            href={this.formatUrl(pathName, pageNumberQueryParam || "", previousPageNumber || 1, "")}
+            href={this.formatUrl(pathName, pageNumberQueryParam || "", previousPageNumber || 1, otherQueryParams || "")}
             rel="prev"
           >
             <PainlessPaginationArrow>
               <LeftArrow />
             </PainlessPaginationArrow>
           </PainlessPaginationLink>
-          {this.renderPaginationRow(currentPageNumber, 10, pathName, pageNumberQueryParam || "", "")}
+          {this.renderPaginationRow(
+            currentPageNumber,
+            totalPages,
+            pathName,
+            pageNumberQueryParam || "",
+            otherQueryParams || ""
+          )}
           <PainlessPaginationLink
             style={{ visibility: rightArrowVisibility }}
-            href={this.formatUrl(pathName, pageNumberQueryParam || "", nextPageNumber || 1, "")}
+            href={this.formatUrl(pathName, pageNumberQueryParam || "", nextPageNumber || 1, otherQueryParams || "")}
             rel="next"
           >
             <PainlessPaginationArrow>
