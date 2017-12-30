@@ -26,16 +26,17 @@ const PainlessPaginationElement = styled.li`
 `;
 
 const PainlessPaginationNumber = PainlessPaginationElement.extend`
+  border: ${props => (props.border ? "1px solid #cccccc" : "0px")};
   font-size: 16px;
   text-align: center;
   line-height: 24px;
   min-width: 40px;
   padding: 8px 0;
-  margin: 0 1px;
+  margin: 0 3px;
   background: ${props => (props.active ? rgb(0, 188, 212) : "white")};
   color: ${props => (props.active ? "white" : rgba(33, 33, 33, 1))};
   vertical-align: middle;
-  box-shadow: ${props => (props.active ? "1px 1px #CCCCCC" : "0px")};
+  box-shadow: ${props => (props.active ? "1px 1px #eeeeee" : "0px")};
 
   &:hover {
     background: ${props => (props.active ? rgb(0, 188, 212) : rgba(0, 188, 212, 0.12))};
@@ -44,7 +45,7 @@ const PainlessPaginationNumber = PainlessPaginationElement.extend`
 `;
 
 const PainlessPaginationArrow = PainlessPaginationElement.extend`
-  margin-top: 5px;
+  margin-top: 3px;
   vertical-align: middle;
 `;
 
@@ -95,7 +96,10 @@ class PainlessPagination extends React.Component<Props> {
   renderPaginationRow(currentPage: number, pageCount: number) {
     const paginationVals = [];
     const delta = currentPage < 3 ? 4 : 2;
-    const left = currentPage - delta;
+    const left =
+      currentPage > pageCount - 2
+        ? pageCount - currentPage === 0 ? currentPage - (delta + 2) : currentPage - (delta + 1)
+        : currentPage - delta;
     const right = currentPage === 2 ? currentPage + delta : currentPage + delta + 1;
     let result = [];
 
@@ -163,21 +167,41 @@ class PainlessPagination extends React.Component<Props> {
     const previousPageNumber = currentPageNumber > 1 ? currentPageNumber - 1 : currentPageNumber;
     let queryParam = "";
     let forwardSlash = "/";
+    let leftArrowVisibility = "visible",
+      rightArrowVisibility = "visible";
 
     if (pageNumberQueryParam) {
       queryParam = `?${pageNumberQueryParam}=`;
       forwardSlash = "";
     }
 
+    if (currentPageNumber === 1) {
+      leftArrowVisibility = "hidden";
+    } else if (currentPageNumber === 10) {
+      rightArrowVisibility = "hidden";
+    }
+
     return (
       <PainlessPaginationWrapper>
         <PainlessPaginationList>
-          <PainlessPaginationLink href={`${pathName}${forwardSlash}${queryParam}${previousPageNumber}`}>
-            <LeftArrow />
+          <PainlessPaginationLink
+            style={{ visibility: leftArrowVisibility }}
+            href={`${pathName}${forwardSlash}${queryParam}${previousPageNumber}`}
+            rel="prev"
+          >
+            <PainlessPaginationArrow>
+              <LeftArrow />
+            </PainlessPaginationArrow>
           </PainlessPaginationLink>
           {this.renderPaginationRow(currentPageNumber, 10)}
-          <PainlessPaginationLink href={`${pathName}${forwardSlash}${queryParam}${nextPageNumber}`}>
-            <RightArrow />
+          <PainlessPaginationLink
+            style={{ visibility: rightArrowVisibility }}
+            href={`${pathName}${forwardSlash}${queryParam}${nextPageNumber}`}
+            rel="next"
+          >
+            <PainlessPaginationArrow>
+              <RightArrow />
+            </PainlessPaginationArrow>
           </PainlessPaginationLink>
         </PainlessPaginationList>
       </PainlessPaginationWrapper>
