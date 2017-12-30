@@ -17,7 +17,7 @@ const PainlessPaginationLink = styled.a`
 `;
 
 const PainlessPaginationElement = styled.li`
-  border-radius: 50%;
+  border-radius: ${props => (props.circle ? "50%" : "4%")};
   color: rgba(33, 33, 33, 1);
   display: inline-block;
   margin: 0;
@@ -45,27 +45,23 @@ const PainlessPaginationNumber = PainlessPaginationElement.extend`
 `;
 
 const PainlessPaginationArrow = PainlessPaginationElement.extend`
-  margin-top: 3px;
+  margin-top: 5px;
   vertical-align: middle;
 `;
 
 const LeftArrow = () => {
   return (
-    <PainlessPaginationArrow>
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-        <path fill="rgba(33, 33, 33, 1)" d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z" />
-      </svg>
-    </PainlessPaginationArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+      <path fill="rgba(33, 33, 33, 1)" d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z" />
+    </svg>
   );
 };
 
 const RightArrow = () => {
   return (
-    <PainlessPaginationArrow>
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
-        <path fill="rgba(33, 33, 33, 1)" d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z" />
-      </svg>
-    </PainlessPaginationArrow>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+      <path fill="rgba(33, 33, 33, 1)" d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z" />
+    </svg>
   );
 };
 
@@ -93,7 +89,36 @@ class PainlessPagination extends React.Component<Props> {
    */
   static propTypes = {};
 
-  renderPaginationRow(currentPage: number, pageCount: number) {
+  formatUrl(pathName: string, pageQueryParam: string, pageNumber: number, otherQueryParams: string) {
+    let url = "";
+    let queryParam = "";
+    let forwardSlash = "/";
+
+    console.log("pathName:", pathName);
+
+    if (pageQueryParam) {
+      queryParam = `?${pageQueryParam}=`;
+      forwardSlash = "";
+    }
+
+    if (pathName === "/") {
+      pathName = "";
+    }
+
+    url = `${pathName}${forwardSlash}${queryParam}${pageNumber}`;
+
+    console.log("url:", url);
+
+    return url;
+  }
+
+  renderPaginationRow(
+    currentPage: number,
+    pageCount: number,
+    pathName: string,
+    pageQueryParam: string,
+    otherQueryParams: string
+  ) {
     const paginationVals = [];
     const delta = currentPage < 3 ? 4 : 2;
     const left =
@@ -108,14 +133,24 @@ class PainlessPagination extends React.Component<Props> {
     for (let x = 0; x < result.length; x++) {
       if (result[x] === currentPage) {
         paginationVals.push(
-          <PainlessPaginationLink key={result[x]} href={`/${result[x]}`}>
-            <PainlessPaginationNumber active>{result[x]}</PainlessPaginationNumber>
+          <PainlessPaginationLink
+            key={result[x]}
+            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, "")}
+          >
+            <PainlessPaginationNumber border={this.props.border} circle={this.props.circle} active>
+              {result[x]}
+            </PainlessPaginationNumber>
           </PainlessPaginationLink>
         );
       } else {
         paginationVals.push(
-          <PainlessPaginationLink key={result[x]} href={`/${result[x]}`}>
-            <PainlessPaginationNumber>{result[x]}</PainlessPaginationNumber>
+          <PainlessPaginationLink
+            key={result[x]}
+            href={this.formatUrl(pathName, pageQueryParam || "", result[x] || 1, "")}
+          >
+            <PainlessPaginationNumber border={this.props.border} circle={this.props.circle}>
+              {result[x]}
+            </PainlessPaginationNumber>
           </PainlessPaginationLink>
         );
       }
@@ -165,15 +200,8 @@ class PainlessPagination extends React.Component<Props> {
     const { currentPageNumber, pageNumberQueryParam, pathName } = this.getPaginationInformation();
     const nextPageNumber = currentPageNumber + 1;
     const previousPageNumber = currentPageNumber > 1 ? currentPageNumber - 1 : currentPageNumber;
-    let queryParam = "";
-    let forwardSlash = "/";
     let leftArrowVisibility = "visible",
       rightArrowVisibility = "visible";
-
-    if (pageNumberQueryParam) {
-      queryParam = `?${pageNumberQueryParam}=`;
-      forwardSlash = "";
-    }
 
     if (currentPageNumber === 1) {
       leftArrowVisibility = "hidden";
@@ -186,17 +214,17 @@ class PainlessPagination extends React.Component<Props> {
         <PainlessPaginationList>
           <PainlessPaginationLink
             style={{ visibility: leftArrowVisibility }}
-            href={`${pathName}${forwardSlash}${queryParam}${previousPageNumber}`}
+            href={this.formatUrl(pathName, pageNumberQueryParam || "", previousPageNumber || 1, "")}
             rel="prev"
           >
             <PainlessPaginationArrow>
               <LeftArrow />
             </PainlessPaginationArrow>
           </PainlessPaginationLink>
-          {this.renderPaginationRow(currentPageNumber, 10)}
+          {this.renderPaginationRow(currentPageNumber, 10, pathName, pageNumberQueryParam || "", "")}
           <PainlessPaginationLink
             style={{ visibility: rightArrowVisibility }}
-            href={`${pathName}${forwardSlash}${queryParam}${nextPageNumber}`}
+            href={this.formatUrl(pathName, pageNumberQueryParam || "", nextPageNumber || 1, "")}
             rel="next"
           >
             <PainlessPaginationArrow>
