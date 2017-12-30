@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render 1`] = `
+<div
+  className="sc-bdVaJa khUSez"
+>
+  <ul
+    className="sc-bwzfXH bPeWBT"
+  >
+    <a
+      className="sc-htpNat jZGOfu"
+      href="/races/1"
+    >
+      <li
+        className="sc-ifAKCX dcZKHI"
+      >
+        <i />
+      </li>
+    </a>
+    <a
+      className="sc-htpNat jZGOfu"
+      href="/races/2"
+    >
+      <li
+        className="sc-EHOje ePrfLX"
+      >
+        <i />
+      </li>
+    </a>
+  </ul>
+</div>
+`;

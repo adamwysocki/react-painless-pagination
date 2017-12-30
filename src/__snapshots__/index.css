@@ -1,0 +1,44 @@
+.component-pagination-wrapper {
+  text-align: center;
+}
+
+.component-pagination {
+  list-style: none;
+  padding: 8px;
+}
+.component-pagination li {
+  border-radius: 50%;
+  color: rgba(33, 33, 33, 1);
+  display: inline-block;
+  margin: 0;
+  transition: 0.15s ease-in;
+  cursor: pointer;
+}
+
+.component-pagination li:hover {
+  background: rgba(0, 188, 212, 0.12);
+}
+
+.pagination-number,
+.pagination-arrow i {
+  vertical-align: middle;
+}
+
+.pagination-number.current-number {
+  background: rgb(0, 188, 212);
+  color: #fff;
+}
+
+.pagination-number {
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  line-height: 24px;
+  min-width: 40px;
+  padding: 8px 0;
+}
+
+.pagination-arrow i {
+  font-size: 24px;
+  padding: 8px;
+}

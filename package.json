@@ -1,0 +1,68 @@
+{
+  "name": "react-painless-pagination",
+  "version": "0.1.3",
+  "description": "A react component that makes paginating your data painless and SEO friendly",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "keywords": [
+    "react",
+    "search engine",
+    "SEO",
+    "paginate",
+    "pagination",
+    "easy",
+    "simple",
+    "styled",
+    "beautiful",
+    "react-component"
+  ],
+  "main": "build/index.js",
+  "peerDependencies": {
+    "react": "^16.2.0"
+  },
+  "dependencies": {
+    "eslint": "^4.14.0",
+    "polished": "^1.9.0",
+    "webpack": "^2.6.1"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "webpack --watch",
+    "build": "webpack",
+    "lint": "eslint src; exit 0",
+    "flow": "flow"
+  },
+  "author": {
+    "name": "Adam Wysocki",
+    "email": "adam@adamwysocki.me"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.1.2",
+    "babel-jest": "^22.0.4",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.2.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.0",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-flowtype": "^2.40.1",
+    "eslint-plugin-react": "^7.5.1",
+    "jest": "^22.0.4",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-test-renderer": "^16.2.0",
+    "sinon": "^4.1.3",
+    "styled-components": "^2.4.0"
+  }
+}
