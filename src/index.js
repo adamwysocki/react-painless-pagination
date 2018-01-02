@@ -75,7 +75,10 @@ const pageQueryParams = ["page", "page_num", "pageNum", "page_number", "pageNumb
  */
 type Props = {
   border: boolean,
-  circle: boolean
+  circle: boolean,
+  enableTransition: boolean,
+  currentPage: number,
+  totalNumberOfPages: number
 };
 
 /**
@@ -91,7 +94,9 @@ class PainlessPagination extends React.Component<Props> {
    */
   static defaultProps = {
     border: false,
-    circle: false
+    circle: false,
+    enableTransition: true,
+    totalNumberOfPages: 2
   };
 
   /**
@@ -102,14 +107,16 @@ class PainlessPagination extends React.Component<Props> {
    */
   static propTypes = {
     border: PropTypes.bool,
-    circle: PropTypes.bool
+    circle: PropTypes.bool,
+    enableTransition: PropTypes.bool,
+    currentPage: PropTypes.number,
+    totalNumberOfPages: PropTypes.number
   };
 
   navigateToPage(event: SyntheticEvent, url: ?string) {
-    console.log("event:", event);
-    console.log("url:", url);
-    //event.preventDefault();
-    window.history.pushState({}, "Title", url);
+    if (this.props.enableTransition) {
+      window.history.push(url);
+    }
   }
 
   /**
@@ -195,6 +202,7 @@ class PainlessPagination extends React.Component<Props> {
     let otherQueryParams = "";
     const location = window.location;
 
+    // first check and see if the url contains the page number as it's last element
     if (location.hasOwnProperty("pathname") && location.pathname) {
       const pathParts = location.pathname.split("/");
       const lastElement = parseInt(pathParts[pathParts.length - 1], 10);
@@ -206,6 +214,7 @@ class PainlessPagination extends React.Component<Props> {
       }
     }
 
+    // next, check to see if there is a query param that we recognize
     if (location.hasOwnProperty("search") && location.search) {
       const trimmedSearchString = location.search.substring(1, location.search.length);
       const searchParams = trimmedSearchString.split("&");
@@ -222,6 +231,8 @@ class PainlessPagination extends React.Component<Props> {
       }
       otherQueryParams = searchParams.join("&");
     }
+
+    // return what we've found
     return { currentPageNumber, pageNumberQueryParam, pathName, otherQueryParams };
   }
 
@@ -231,7 +242,7 @@ class PainlessPagination extends React.Component<Props> {
    * @return {string} - HTML markup for the component.
    */
   render() {
-    const totalPages = 2;
+    const totalPages = this.props.totalNumberOfPages;
     const { currentPageNumber, pageNumberQueryParam, pathName, otherQueryParams } = this.getPaginationInformation();
     const nextPageNumber = currentPageNumber + 1;
     const previousPageNumber = currentPageNumber > 1 ? currentPageNumber - 1 : currentPageNumber;
